@@ -4,14 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5C60BFFC-A5C2-4AE1-800D-A36729ED6520}</ProjectGuid>
+    <ProjectGuid>{5533A2D6-162F-4DC5-A998-F4F0161217BD}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Solid</RootNamespace>
-    <AssemblyName>Solid</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <RootNamespace>S_SingleResponsibilityPrinciple</RootNamespace>
+    <AssemblyName>S_SingleResponsibilityPrinciple</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -43,10 +44,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SOLID\D_ServicoDeConta.cs" />
-    <Compile Include="SOLID\I_DepositoSaque.cs" />
-    <Compile Include="SOLID\L_ContaBancaria.cs" />
-    <Compile Include="SOLID\O_ContaBancaria.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -1,9 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36414.22 d17.14
+VisualStudioVersion = 17.14.36414.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Solid", "Solid\Solid.csproj", "{5C60BFFC-A5C2-4AE1-800D-A36729ED6520}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S_SingleResponsibilityPrinciple", "S_SingleResponsibilityPrinciple\S_SingleResponsibilityPrinciple.csproj", "{5533A2D6-162F-4DC5-A998-F4F0161217BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "O_OpenClosedPrinciple", "O_OpenClosedPrinciple\O_OpenClosedPrinciple.csproj", "{3B1E267F-A22F-4788-B421-3E317218F4BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "L_LiskovSubstitutionPrinciple", "L_LiskovSubstitutionPrinciple\L_LiskovSubstitutionPrinciple.csproj", "{A7A000C5-4B8B-4E50-A917-2CC422FF13FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "I_InterfaceSegregationPrinciple", "I_InterfaceSegregationPrinciple\I_InterfaceSegregationPrinciple.csproj", "{33360310-AC65-4ECB-9EE7-90AC8E6708ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "D_DependencyInversionPrinciple", "D_DependencyInversionPrinciple\D_DependencyInversionPrinciple.csproj", "{4F26D338-80A6-45B6-A1BD-E754F08BBD62}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +25,26 @@ Global
 		{5C60BFFC-A5C2-4AE1-800D-A36729ED6520}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C60BFFC-A5C2-4AE1-800D-A36729ED6520}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C60BFFC-A5C2-4AE1-800D-A36729ED6520}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5533A2D6-162F-4DC5-A998-F4F0161217BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5533A2D6-162F-4DC5-A998-F4F0161217BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5533A2D6-162F-4DC5-A998-F4F0161217BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5533A2D6-162F-4DC5-A998-F4F0161217BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B1E267F-A22F-4788-B421-3E317218F4BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B1E267F-A22F-4788-B421-3E317218F4BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B1E267F-A22F-4788-B421-3E317218F4BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B1E267F-A22F-4788-B421-3E317218F4BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7A000C5-4B8B-4E50-A917-2CC422FF13FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7A000C5-4B8B-4E50-A917-2CC422FF13FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7A000C5-4B8B-4E50-A917-2CC422FF13FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7A000C5-4B8B-4E50-A917-2CC422FF13FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33360310-AC65-4ECB-9EE7-90AC8E6708ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33360310-AC65-4ECB-9EE7-90AC8E6708ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33360310-AC65-4ECB-9EE7-90AC8E6708ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33360310-AC65-4ECB-9EE7-90AC8E6708ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F26D338-80A6-45B6-A1BD-E754F08BBD62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F26D338-80A6-45B6-A1BD-E754F08BBD62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F26D338-80A6-45B6-A1BD-E754F08BBD62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F26D338-80A6-45B6-A1BD-E754F08BBD62}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
