@@ -43,6 +43,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Implementações\ContaCorrente.cs" />
+    <Compile Include="Implementações\ContaPoupanca.cs" />
+    <Compile Include="Interfaces\IContaDeposito.cs" />
+    <Compile Include="Interfaces\IContaSaque.cs" />
     <Compile Include="I_InterfaceSegregationPrinciple.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

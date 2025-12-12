@@ -43,6 +43,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes Filhas\ContaCorrente_.cs" />
+    <Compile Include="Classes Filhas\ContaPoupanca_.cs" />
+    <Compile Include="Classe Base\L_ContaBancaria.cs" />
     <Compile Include="L_LiskovSubstitutionPrinciple.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

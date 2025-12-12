@@ -44,9 +44,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Impressão\ImpressoraExtrato.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="S_SingleResponsabilityPrinciple.cs" />
+    <Compile Include="Manipulação de Conta\S_ContaBancaria.cs" />
+    <Compile Include="Manipulação de Conta\S_ContaBancariaErrada.cs" />
+    <Compile Include="S_SingleResponsibilityPrinciple.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

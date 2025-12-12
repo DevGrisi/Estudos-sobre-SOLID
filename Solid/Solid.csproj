@@ -43,10 +43,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SOLID\D_ServicoDeConta.cs" />
-    <Compile Include="SOLID\I_DepositoSaque.cs" />
-    <Compile Include="SOLID\L_ContaBancaria.cs" />
-    <Compile Include="SOLID\O_ContaBancaria.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
