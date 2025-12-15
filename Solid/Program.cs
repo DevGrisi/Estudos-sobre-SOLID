@@ -1,5 +1,12 @@
-﻿using System;
-using Solid.SOLID;
+﻿using Solid.Entidades;
+using Solid.Services;
+using Solid.Services.Implementações;
+using Solid.Services.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Solid
 {
@@ -7,137 +14,44 @@ namespace Solid
     {
         static void Main(string[] args)
         {
-            Apresentacao("SOLID -> demonstração usando as classes do projeto");
+            // Cria uma implementação concreta do repositório de contas.
+            // IContaRepository define:
+            // void Salvar(Conta conta);
+            // Conta Obter(int numero);
+            // List<Conta> Listar();
+            IContaRepository repo = new ArquivoContaRepository();
 
-            // S — Single Responsibility
-            MostrarTitulo("S — Single Responsibility (Responsabilidade Única)");
-            DemonstrarSingleResponsibility();
+            // Cria o serviço de domínio e injeta o repositório.
+            var contaService = new ContaService(repo);
 
-            // O — Open/Closed
-            MostrarTitulo("O — Open/Closed (Aberto para extensão, fechado para modificação)");
-            DemonstrarOpenClosed();
+            // Serviço responsável por gerar relatórios (apenas apresentação).
+            var relatorio = new RelatorioService();
 
-            // L — Liskov Substitution
-            MostrarTitulo("L — Liskov Substitution (Substituição de Liskov)");
-            DemonstrarLiskov();
+            // Criação de instâncias de contas concretas.
+            // Ambos derivam de Conta (abstract) que expõe:int Numero { get; } || string Titular { get; }
+            // decimal Saldo { get; set; } || void Depositar(decimal valor){} || virtual void Sacar(decimal valor){}
+            // abstract void AplicarTaxaMensal(){}
+            var conta1 = new Conta(1, "Joao", 1000m);
+            var conta2 = new Conta(2, "Maria", 1500m);
 
-            // I — Interface Segregation
-            MostrarTitulo("I — Interface Segregation (Segregação de Interfaces)");
-            DemonstrarInterfaceSegregation();
+            // Persistência: salva as contas via ContaService -> ArquivoContaRepository.Salvar()
+            // ArquivoContaRepository.Salvar(Conta conta) sobrescreve/atualiza a lista no arquivo JSON.
+            contaService.CriarConta(conta1);
+            contaService.CriarConta(conta2);
+          
+            contaService.Depositar(1, 500m); // Operação de negócio: deposita R$500 na conta 1
 
-            // D — Dependency Inversion
-            MostrarTitulo("D — Dependency Inversion (Inversão de Dependência)");
-            DemonstrarDependencyInversion();
+            contaService.Sacar(2, 200m); // Operaçõa de negócio: saca R$200 da conta 2
 
-            Console.WriteLine();
-            Console.WriteLine("Demonstração concluída. Pressione qualquer tecla para sair...");
+            // Apresentação: percorre todas as contas e imprime resumo via RelatorioService.ImprimirResumo(Conta)
+            relatorio.ImprimirResumoDeTodasAsContas(contaService.ListarContas());
+
+            var conta3 = new Conta(3, "Carlos", 2000m);
+            contaService.CriarConta(conta3);
+            relatorio.ImprimirResumo(conta3); // Imprime resumo de uma conta especifica
+
+            // Mantém a janela aberta para visualização
             Console.ReadKey();
-        }
-
-        private static void Apresentacao(string texto)
-        {
-            Console.WriteLine(new string('=', 80));
-            Console.WriteLine(texto);
-            Console.WriteLine(new string('=', 80));
-            Console.WriteLine();
-        }
-
-        private static void MostrarTitulo(string titulo)
-        {
-            Console.WriteLine(titulo);
-            Console.WriteLine(new string('-', titulo.Length));
-        }
-
-        // S — exemplo: S_ContaBancaria e ImpressoraExtrato (cada classe tem uma unica responsabilidade)
-        private static void DemonstrarSingleResponsibility()
-        {
-            var conta = new S_ContaBancaria();
-            conta.Depositar(150.0);
-            Console.WriteLine("Operação: Deposito de R$150 realizada na conta (classe S_ContaBancaria).");
-            var impressora = new ImpressoraExtrato();
-            Console.Write("Impressão do extrato (classe ImpressoraExtrato): ");
-            impressora.ImprimirExtrato(conta);
-            Console.WriteLine();
-        }
-
-        // O — exemplo: O_ContaBancaria (aberta para extensao: novas contas; fechada para modificação)
-        private static void DemonstrarOpenClosed()
-        {
-            O_ContaBancaria cc = new ContaCorrente { Saldo = 100.0 };
-            O_ContaBancaria cp = new ContaPoupanca { Saldo = 100.0 };
-
-            Console.WriteLine("Antes da taxa:");
-            Console.WriteLine($"ContaCorrente Saldo: {cc.Saldo:C}");
-            Console.WriteLine($"ContaPoupanca  Saldo: {cp.Saldo:C}");
-
-            cc.AplicarTaxaMensal();
-            cp.AplicarTaxaMensal();
-
-
-            Console.WriteLine("Depois de AplicarTaxaMensal():");
-            Console.WriteLine($"ContaCorrente Saldo: {cc.Saldo:C} (taxa aplicada pela classe derivada)");
-            Console.WriteLine($"ContaPoupanca  Saldo: {cp.Saldo:C} (taxa aplicada pela classe derivada)");
-            Console.WriteLine();
-        }
-
-        // L — exemplo: L_ContaBancaria e substituição por classes derivadas
-        private static void DemonstrarLiskov()
-        {
-            L_ContaBancaria corrente = new ContaCorrente_ { Saldo = 200.0 };
-            L_ContaBancaria poupanca = new ContaPoupanca_ { Saldo = 50.0 };
-
-            Console.WriteLine("Tentando sacar R$50 de ambas as contas usando metodo que aceita L_ContaBancaria:");
-            Sacar(corrente, 50.0);
-            Sacar(poupanca, 50.0);
-
-            Console.WriteLine("Saque bem sucedido demonstra que objetos derivados podem substituir a classe base sem quebrar");
-            Console.WriteLine();
-        }
-
-        private static void Sacar(L_ContaBancaria conta, double valor)
-        {
-            try
-            {
-                conta.Sacar(valor);
-                Console.WriteLine($"Saque de {valor:C} realizado. Saldo restante: {conta.Saldo:C}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Falha ao sacar {valor:C}: {ex.Message}");
-            }
-        }
-
-        // I — exemplo: segregação de interfaces (I_DepositoSaque.IContaDeposito / IContaSaque)
-        private static void DemonstrarInterfaceSegregation()
-        {
-            // ContaCorrente implementa deposito e saque
-            var contaCorrente = new I_DepositoSaque.ContaCorrente();
-            contaCorrente.Depositar(300.0);
-            Console.WriteLine("I — ContaCorrente: implementa IContaDeposito e IContaSaque (pode depositar e sacar).");
-            contaCorrente.Sacar(100.0);
-            Console.WriteLine("Operações realizadas: depsoito 300, saqe 100 (interno).");
-
-            // ContaPoupanca implementa apenas depósito
-            var contaPoupanca = new I_DepositoSaque.ContaPoupanca();
-            contaPoupanca.Depositar(200.0);
-            Console.WriteLine("I — ContaPoupanca: implementa apenas IContaDeposito (não tem metodo Sacar).");
-            Console.WriteLine("Operação realizada: deposito 200 (não é possível sacar dessa implementação).");
-            Console.WriteLine();
-        }
-
-        // D — exemplo: inversão de dependência (D_ServicoDeConta depende da abstração IRepositorioDeContas)
-        private static void DemonstrarDependencyInversion()
-        {
-            // Criamos um repositório concreto e injetamos na classe de serviço
-            var repositorio = new RepositorioSqlDeContas();
-            var servico = new D_ServicoDeConta(repositorio);
-
-            var conta = new Solid.SOLID.ContaBancaria { NumeroConta = "12345-6" };
-            servico.AdicionarConta(conta);
-
-            Console.WriteLine("D — O serviço D_ServicoDeConta depende da abstração IRepositorioDeContas");
-            Console.WriteLine("Ao injetar RepositorioSqlDeContas, o serviço persiste sem conhecer detalhes da implementação concreta");
-            Console.WriteLine();
         }
     }
 }
