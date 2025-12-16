@@ -15,5 +15,6 @@ namespace Solid.Services.Interfaces
         void Salvar(Conta conta);
         Conta Obter(int numero);
         List<Conta> Listar();
+        void ExcluirContas(); // Método para excluir todas as contas quando o programa se encerra, útil para testes. Pode ser removido
     }
 }

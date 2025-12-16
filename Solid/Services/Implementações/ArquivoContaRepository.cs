@@ -35,7 +35,12 @@ namespace Solid.Services.Implementações
         {
             // Carrega todas as contas existentes
             var contas = CarregarArquivo();
-            contas.RemoveAll(c => c.Numero == conta.Numero); // Remove a conta existente com o mesmo número, se houver
+            //contas.RemoveAll(c => c.Numero == conta.Numero); // Remove a conta existente com o mesmo número, se houver
+            
+            if (contas.Any(c => c.Numero == conta.Numero)) // Verifica se a conta já existe
+                throw new InvalidOperationException("Conta com esse número já existe.");
+
+
             contas.Add(conta); // Adiciona a nova conta
 
 
@@ -61,6 +66,14 @@ namespace Solid.Services.Implementações
         public List<Conta> Listar()
         {
             return CarregarArquivo();
+        }
+
+        public void ExcluirContas()
+        {
+            if(File.Exists(Arquivo))
+            {
+                File.Delete(Arquivo); // Exclui o arquivo de contas
+            }
         }
     }
 }

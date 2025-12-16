@@ -4,9 +4,7 @@ using Solid.Services.Implementações;
 using Solid.Services.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Globalization;
 
 namespace Solid
 {
@@ -22,36 +20,200 @@ namespace Solid
             IContaRepository repo = new ArquivoContaRepository();
 
             // Cria o serviço de domínio e injeta o repositório.
+            // ContaService(IContaRepository repositorio)
+            // Métodos úteis:
+            //   void CriarConta(Conta conta)             -> salva a conta no repositório
+            //   void Depositar(int numero, decimal v)   -> obtém, deposita e salva
+            //   void AplicarTaxasMensais()               -> aplica taxa em todas e salva
+            //   List<Conta> ListarContas()               -> retorna todas as contas
             var contaService = new ContaService(repo);
 
-            // Serviço responsável por gerar relatórios (apenas apresentação).
+            // Serviço responsável por gerar relatórios (apresentação).
+            // RelatorioService:
+            //   void ImprimirResumo(Conta conta)                 -> imprime dados da conta
+            //   void ImprimirResumoDeTodasAsContas(List<Conta>)  -> imprime todas as contas
             var relatorio = new RelatorioService();
 
-            // Criação de instâncias de contas concretas.
-            // Ambos derivam de Conta (abstract) que expõe:int Numero { get; } || string Titular { get; }
-            // decimal Saldo { get; set; } || void Depositar(decimal valor){} || virtual void Sacar(decimal valor){}
-            // abstract void AplicarTaxaMensal(){}
-            var conta1 = new Conta(1, "Joao", 1000m);
-            var conta2 = new Conta(2, "Maria", 1500m);
+            // Menu interativo para o usuário:
+            while (true)
+            {
+                Console.WriteLine();
+                Console.WriteLine("=== Gestão de Contas (SOLID) ===");
+                Console.WriteLine("1) Criar nova conta");
+                Console.WriteLine("2) Pesquisar conta por número");
+                Console.WriteLine("3) Depositar");
+                Console.WriteLine("4) Sacar");
+                Console.WriteLine("5) Imprimir relatório de todas as contas");
+                Console.WriteLine("6) Imprimir relatório de uma conta específica");
+                Console.WriteLine("0) Sair");
+                Console.Write("Escolha uma opção: ");
 
-            // Persistência: salva as contas via ContaService -> ArquivoContaRepository.Salvar()
-            // ArquivoContaRepository.Salvar(Conta conta) sobrescreve/atualiza a lista no arquivo JSON.
-            contaService.CriarConta(conta1);
-            contaService.CriarConta(conta2);
-          
-            contaService.Depositar(1, 500m); // Operação de negócio: deposita R$500 na conta 1
+                var opc = Console.ReadLine();
 
-            contaService.Sacar(2, 200m); // Operaçõa de negócio: saca R$200 da conta 2
+                Console.WriteLine();
 
-            // Apresentação: percorre todas as contas e imprime resumo via RelatorioService.ImprimirResumo(Conta)
-            relatorio.ImprimirResumoDeTodasAsContas(contaService.ListarContas());
+                if (opc == "0")
+                    break;
 
-            var conta3 = new Conta(3, "Carlos", 2000m);
-            contaService.CriarConta(conta3);
-            relatorio.ImprimirResumo(conta3); // Imprime resumo de uma conta especifica
-
-            // Mantém a janela aberta para visualização
-            Console.ReadKey();
+                try
+                {
+                    switch (opc)
+                    {
+                        case "1":
+                            CriarContaInteractiva(contaService);
+                            break;
+                        case "2":
+                            PesquisarConta(repo, relatorio);
+                            break;
+                        case "3":
+                            DepositarInteractivo(contaService);
+                            break;
+                        case "4":
+                            SacarInteractivo(contaService);
+                            break;
+                        case "5":
+                            relatorio.ImprimirResumoDeTodasAsContas(contaService.ListarContas());
+                            break;
+                        case "6":
+                            ImprimirRelatorioContaEspecifica(repo, relatorio);
+                            break;
+                        default:
+                            Console.WriteLine("Opção inválida.");
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Tratamento simples de erros para o demo.
+                    Console.WriteLine($"Erro: {ex.Message}");
+                }
+            }
+            repo.ExcluirContas();
+            Console.WriteLine("Excluindo todas as contas do sistema. Até mais!");
         }
+
+        // Cria uma conta perguntando número, titular e saldo inicial.
+        // Usa apenas a classe Conta (não há mais distinção entre tipos de conta).
+        // Conta constructor: Conta(int numero, string titular, decimal saldo)
+        private static void CriarContaInteractiva(ContaService contaService)
+        {
+            Console.WriteLine("Criar nova conta");
+
+            Console.Write("Número da conta (inteiro): ");
+            if (!int.TryParse(Console.ReadLine(), out int numero))
+            {
+                Console.WriteLine("Número inválido.");
+                return;
+            }
+
+            Console.Write("Titular: ");
+            var titular = Console.ReadLine() ?? string.Empty;
+
+            Console.Write("Saldo inicial (ex: 1000.50): ");
+            if (!decimal.TryParse(Console.ReadLine(), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal saldo))
+            // permite ponto como separador decimal (independente da cultura) e aceita sinais e notação científica
+            {
+                Console.WriteLine("Valor inválido.");
+                return;
+            }
+
+            // Instancia uma Conta simples (não há ContaCorrente / ContaPoupanca)
+            var nova = new Conta(numero, titular, saldo);
+
+            // ContaService.CriarConta(Conta conta)
+            contaService.CriarConta(nova);
+            Console.WriteLine($"Conta criada: {numero} - {titular} (Saldo: {nova.Saldo:C})");
+            Console.Clear();
+        }
+
+        // Pesquisa uma conta pelo número e imprime resumo (se existir).
+        // Usa IContaRepository.Obter(int numero) e RelatorioService.ImprimirResumo(Conta)
+        private static void PesquisarConta(IContaRepository repo, RelatorioService relatorio)
+        {
+            Console.Write("Número da conta a pesquisar: ");
+            if (!int.TryParse(Console.ReadLine(), out int numero))
+            {
+                Console.WriteLine("Número inválido.");
+                return;
+            }
+
+            var conta = repo.Obter(numero); // pode ser null se não existir
+            if (conta == null)
+            {
+                Console.WriteLine("Conta não encontrada.");
+                return;
+            }
+
+            relatorio.ImprimirResumo(conta);
+            Console.Clear();
+        }
+
+        // Interação para depositar: pede número e valor e delega a ContaService.Depositar
+        // ContaService.Depositar(int numero, decimal valor) -> obtém, deposita e salva.
+        private static void DepositarInteractivo(ContaService contaService)
+        {
+            Console.Write("Número da conta para depósito: ");
+            if (!int.TryParse(Console.ReadLine(), out int numero))
+            {
+                Console.WriteLine("Número inválido.");
+                return;
+            }
+
+            Console.Write("Valor a depositar: ");
+            if (!decimal.TryParse(Console.ReadLine(), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal valor))
+            {
+                Console.WriteLine("Valor inválido.");
+                return;
+            }
+
+            contaService.Depositar(numero, valor);
+            Console.WriteLine("Depósito realizado.");
+            Console.Clear();
+        }
+
+        // Interação para saque: delega a ContaService.Sacar(int numero, decimal valor)
+        // ContaService.Sacar deve validar existência e regras internas da Conta (lança exceção em erro).
+        private static void SacarInteractivo(ContaService contaService)
+        {
+            Console.Write("Número da conta para saque: ");
+            if (!int.TryParse(Console.ReadLine(), out int numero))
+            {
+                Console.WriteLine("Número inválido.");
+                return;
+            }
+
+            Console.Write("Valor a sacar: ");
+            if (!decimal.TryParse(Console.ReadLine(), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal valor))
+            {
+                Console.WriteLine("Valor inválido.");
+                return;
+            }
+
+            contaService.Sacar(numero, valor);
+            Console.WriteLine("Saque realizado.");
+            Console.Clear();
+        }
+
+        // Imprime relatório de uma conta específica pedida pelo usuário.
+        private static void ImprimirRelatorioContaEspecifica(IContaRepository repo, RelatorioService relatorio)
+        {
+            Console.Write("Número da conta para relatório: ");
+            if (!int.TryParse(Console.ReadLine(), out int numero))
+            {
+                Console.WriteLine("Número inválido.");
+                return;
+            }
+
+            var conta = repo.Obter(numero);
+            if (conta == null)
+            {
+                Console.WriteLine("Conta não encontrada.");
+                return;
+            }
+
+            relatorio.ImprimirResumo(conta);
+            Console.Clear();
+        }
+        
     }
 }
